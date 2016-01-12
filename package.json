@@ -1,0 +1,27 @@
+{
+  "name": "appium-ui",
+  "version": "1.0.0",
+  "description": "appium-ui",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bongster/appium-ui.git"
+  },
+  "keywords": [
+    "appium"
+  ],
+  "author": "bongster",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bongster/appium-ui/issues"
+  },
+  "homepage": "https://github.com/bongster/appium-ui#readme",
+  "dependencies": {
+    "ejs": "^2.3.4",
+    "express": "^4.13.3"
+  }
+}
