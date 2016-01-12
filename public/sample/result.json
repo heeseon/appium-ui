@@ -1,0 +1,1 @@
+{"check1Test" : [{"TestCase":"check1Test"},{"Result":"PASS","Duration":176}],"check2Test" : [{"TestCase":"check2Test"},{"Result":"PASS","Duration":2056}], "Result" : [{"Ignored":0,"FAIL":0,"PASS":2,"Number of tests executed":2}]}
