@@ -7,6 +7,8 @@ app.set('view engine', 'ejs'); // register the template engine
 
 app.use('/static', express.static(__dirname + '/public'));
 
+app.use('/lib', express.static(__dirname + '/node_modules'));
+
 app.get('/', function (req, res, next) {
 	res.render('index', {title: 'title', message: 'Hello World' });
 });
