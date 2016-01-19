@@ -9,6 +9,8 @@
     <script type="text/javascript" src="/lib/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
     <script type="text/javascript" src="/lib/angular-ui-router/build/angular-ui-router.min.js"></script>
     <script type="text/javascript" src="/lib/angular-translate/dist/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/lib/moment-duration-format/lib/moment-duration-format.js"></script>
     
     <link rel="stylesheet" type="text/css" href="/lib/bootswatch/cosmo/bootstrap.min.css">
     <style type="text/css">
@@ -193,6 +195,7 @@
         }).$promise.then(function (data) {
             $scope.data = data.map(function (d) {
                 d.key = Object.keys(d).join();
+                d[d.key].Duration = moment.duration(d[d.key].Duration, 'seconds').humanize();
                 return d;
             });
         });

@@ -29,6 +29,8 @@
     "bootstrap": "^3.3.6",
     "bootswatch": "^3.3.6",
     "ejs": "^2.3.4",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "moment": "^2.11.1",
+    "moment-duration-format": "^1.3.0"
   }
 }
