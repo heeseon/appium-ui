@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-resource/angular-resource.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+    <script type="text/javascript" src="/lib/angular-ui-router/build/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-translate/dist/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/lib/moment-duration-format/lib/moment-duration-format.js"></script>
+    <script type="text/javascript" src="/lib/mbostock-protovis-1a61bac/protovis.min.js"></script>
+    <script type="text/javascript" src="/static/minnesota.js"></script>
+    <link rel="stylesheet" type="text/css" href="/lib/bootswatch/cosmo/bootstrap.min.css">
+    <style type="text/css">
+    .center {
+        vertical-align: middle !important;
+        text-align: center;
+    }
+    </style>
+</head>
+<body ng-app="app" ng-controller="AppCtrl">
+<nav class="navbar navbar-inverse" ng-controller="NavCtrl">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Brand</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">Link</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li class="divider"></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+      </ul>
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Link</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div ng-controller="MainCtrl" class="container theme-showcase">
+    <div class="page-header">
+        <h1>Results</h1>
+    </div>
+    <blockquote>
+        <p>This is data set of recently tested data</p>
+        <small>Test case key : <cite ng-bind="path"></cite></small>
+    </blockquote>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    
+                    <th translate="id"></th>
+                    <th translate="packageName"></th>
+                    <th translate="sdk"></th>
+                    <th translate="version"></th>
+                    <th translate="period"></th>
+                    <th translate="manufacture"></th>
+                    <th translate="release"></th>
+                    <th translate="model"></th>
+                    <th translate="country"></th>
+                    <th translate="total"></th>
+                    <th translate="shortresult"></th>
+                    <th translate="details"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="i in data"> 
+                    <td><b
+                        ng-bind=  "total - ((<%=pageNum%> -1 ) * 10) - $index"></b></td>
+                    
+                    <td ng-bind = i.ResultDirectory></td>
+                    <td ng-bind = i.packageName></td>
+                    <td ng-bind = i.sdk></td>
+                    <td ng-bind = i.version></td>
+                    <td ng-bind = i.period></td>
+                    <td ng-bind = i.device.manufacturer></td>
+                    <td ng-bind = i.device.release></td>
+                    <td ng-bind = i.device.model></td>
+                    <td ng-bind = i.device.country></td>
+                    <td ng-bind = i.total></td>
+                    <td ng-bind = i.shortresult></td>
+                    <td><a id="link-3" ng-href=http://127.0.0.1:3000/showDetails/{{i.resultfile}}/{{i.profilefile}}/{{i.packageName}}/{{i.sdk}}/{{i.version}}/{{i.period}}/{{i.device.model}}/{{i.device.manufacturer}}/{{i.device.release}}/{{i.device.country}}>details</a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    
+<td></td>
+                    <td>
+                    <div ng-if="pageInfo[0] == -1">
+                        previous
+                    </div>
+            
+                    <div ng-if="pageInfo[0] != -1">
+                        <a id="link-4" ng-href=http://127.0.0.1:3000/showAll/{{pageInfo[0]}}/gt/<%=pageNum*1 - 1%>>previous</a> 
+                    </div>
+                    </td>
+                    <td>
+                    <div ng-if="pageInfo[1] == -1">
+                            next
+                    </div>
+                        
+                    <div ng-if="pageInfo[1] != -1">
+                        <a id="link-5" ng-href=http://127.0.0.1:3000/showAll/{{pageInfo[1]}}/lt/<%=pageNum*1 + 1%>>next</a> 
+                    </div>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+
+
+    </div>
+
+        
+
+</div>
+
+
+<script type="text/javascript">
+    angular.module('app', [
+        'ngResource',
+        'ui.bootstrap',
+        'pascalprecht.translate',
+    ])
+    .config(function ($translateProvider) {
+
+    })
+    .run(function () {
+        console.log('run');
+    })
+    .factory('ResultFactory', function ($resource) {
+        return $resource('/static/:path.json', {
+            path: "@path",
+        });
+    })
+    .factory('DetailFactory', function ($resource) {
+        return $resource('/static/:path.json', {
+            path: "@path",
+        });
+    })
+    .controller('AppCtrl', function ($scope) {
+        console.log('AppCtrl');
+    })
+    .controller('NavCtrl', function ($scope) {
+        console.log('NavCtrl');
+    })
+    .controller('MainCtrl', function($scope, $http) {
+
+    $http.get("http://127.0.0.1:3000/findAll/<%=id%>/<%=scope%>/<%=pageNum%>")//:id/:scope/:pageNum
+        .then(function (data) {
+            console.log("======= = ");
+            console.log("data.data = " + data.data);
+
+            $scope.data = data.data.data;
+            $scope.pageInfo = data.data.pageInfo;  
+            $scope.total = data.data.total;          
+
+    });
+    });
+
+</script>
+</body>
+</html>

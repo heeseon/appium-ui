@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script type="text/javascript" src="/lib/angular/angular.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-resource/angular-resource.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+    <script type="text/javascript" src="/lib/angular-ui-router/build/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="/lib/angular-translate/dist/angular-translate.min.js"></script>
+    <script type="text/javascript" src="/lib/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/lib/moment-duration-format/lib/moment-duration-format.js"></script>
+    <script type="text/javascript" src="/lib/mbostock-protovis-1a61bac/protovis.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" type="text/css" href="/lib/bootswatch/cosmo/bootstrap.min.css">
+    <style type="text/css">
+    .center {
+        vertical-align: middle !important;
+        text-align: center;
+    }
+    </style>
+    
+    <script type="text/javascript+protovis">
+
+        function calculate(width){
+            var screenWidth = window.screen.width;
+            var screenHeight = window.screen.height;
+
+            for(var i = 1; ; ++ i){
+                var tmp = screenWidth - width * i;
+                if(tmp < width){
+                    console.log("space = " + tmp + ", count = " + i);
+                    return { "space" : tmp, "count" : i };
+                }
+            }
+        } 
+
+        function myFunction() {
+            console.log("enter myFunction");
+            var w = 500,
+            h = 100,
+            numberFormat = pv.Format.number(),
+            dateFormat = pv.Format.date("%B %Y");
+
+            var space = calculate(w);
+
+            /* Color by maximum number of people employed in that job. */
+            var c = pv.Scale.log(minnesota, function(d) pv.max(d.values))
+            .range("#ccc", "#1f77b4");
+
+            /* Tile the visualization for each job. */
+            var vis = new pv.Panel()
+                .data(minnesota)
+                .width(w)
+                .height(h + 10)
+                .top(6)
+                .left(Math.floor(space.space/(space.count + 1)))
+                .right(6)
+                .bottom(6);
+
+            /* A panel instance to store scales (x, y) and the mouseover index (i). */
+            var panel = vis.add(pv.Panel)
+                .def("i", -1)
+                .def("x", function(d) pv.Scale.linear(d.values, pv.index).range(0, w))
+                .def("y", function(d) pv.Scale.linear(0, pv.max(d.values)).range(0, h))
+                .bottom(10)
+                .events("all")
+                .event("mousemove", pv.Behavior.point(Infinity).collapse("y"));
+
+            /* The area. */
+            panel.add(pv.Area)
+                .data(function(d) d.values)
+                .fillStyle(function(d, p) panel.i() < 0 ? c(pv.max(p.values)) : "#2ca02c")
+                .left(function() panel.x()(this.index))
+                .height(function(d) panel.y()(d))
+                .bottom(0)
+                .event("point", function() panel.i(this.index))
+                .event("unpoint", function() panel.i(-1));
+
+            /* The x-axis. */
+            panel.add(pv.Rule)
+                .bottom(0);
+
+            /* The mouseover dot. */
+            panel.add(pv.Dot)
+                .visible(function() panel.i() >= 0)
+                .left(function() panel.x()(panel.i()))
+                .bottom(function(d) panel.y()(d.values[panel.i()]))
+                .fillStyle("#ff7f0e")
+                .strokeStyle(null)
+                .size(10);
+
+            /* The label: either the job name, or the month and value. */
+            panel.add(pv.Label)
+                .bottom(-1)
+                .textBaseline("top")
+                .left(function() panel.i() < 0 ? 0 : null)
+                .right(function() panel.i() < 0 ? null : 0)
+                .textAlign(function() panel.i() < 0 ? "left" : "right")
+                .textStyle(function() panel.i() < 0 ? "#009" : "#000")
+                .text(function(d) panel.i() < 0 ? d.name
+                    : indexData[panel.i()]
+                    + ": " + numberFormat(d.values[panel.i()]));
+
+            vis.render();
+        }
+    </script>
+    </head>
+    <body ng-app="app" ng-controller="AppCtrl">
+    <nav class="navbar navbar-inverse" ng-controller="NavCtrl">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">Link</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+                <li class="divider"></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+          </form>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Link</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div ng-controller="MainCtrl" class="container theme-showcase">
+        <div class="page-header">
+            <h1>Test Result</h1>
+        </div>
+        <blockquote>
+            <p>This is test result set of each the tested test cases</p>
+            <small>App Package Name(sdk, version, profile period) : <%=packageName%>(<%=sdk%>, <%=version%>, <%=period%>)</small>
+            <small>Device Model(manufacturer, release, country) : <%=model%>(<%=manufacturer%>, <%=release%>, <%=country%>)</small>
+        </blockquote>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th translate="Name"></th>
+                        <th translate="Result"></th>
+                        <th translate="Duration"></th>
+                        <th translate="Log"></th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="i in data">
+                    <tr>
+                        <td><b
+                            ng-bind="$index + 1"></b></td>
+                        <td ng-bind="i.key"></td>
+                        <td><span
+                            class="label"
+                            ng-class="(i[i.key].Result == 'PASS')? 'label-success': (i[i.key].Result == 'FAIL')? 'label-danger': 'label-info'"
+                            ng-bind="i[i.key].Result"></span></td>
+                        <td ng-bind="i[i.key].Duration"></td>
+
+                        <td> <p title={{i[i.key].Log}}>details</p> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="page-header">
+            <h1>Profiling Result</h1>
+        </div>
+        <blockquote>
+            <p>This is profiling data set of each the tested test cases</p>
+        </blockquote>
+    </div>
+
+</body>
+<script type="text/javascript">
+        angular.module('app', [
+            'ngResource',
+            'ui.bootstrap',
+            'pascalprecht.translate',
+        ])
+        .config(function ($translateProvider) {
+
+        })
+        .run(function () {
+            console.log('run');
+        })
+        .factory('ResultFactory', function ($resource) {
+            return $resource('/static/:path.json', {
+                path: "@path",
+            });
+        })
+        .factory('DetailFactory', function ($resource) {
+            return $resource('/static/:path.json', {
+                path: "@path",
+            });
+        })
+        .controller('AppCtrl', function ($scope) {
+            console.log('AppCtrl');
+        })
+        .controller('NavCtrl', function ($scope) {
+            console.log('NavCtrl');
+        })
+        .controller('MainCtrl', function($scope, $http) {
+            console.log("profile data = <%=profilefile%>");
+            jQuery.getScript("http://127.0.0.1:3000/readFile/<%=profilefile%>").done(
+                function(data, textStatus, jqxhr) {
+                    console.log("profile data = " + data + ", length = " + data.length);
+                    myFunction();
+                }
+                )
+
+            .fail(function(jqXHR, textStatus, error) {
+                data = jqXHR.responseText;
+                data.length = jqXHR.responseText.length;
+               // myFunction();
+            //.fail(function(jqxhr, settings, exception) {
+                console.log( "Triggered ajaxError handler." + textStatus );
+                console.log("resptext__" + jqXHR.responseText + ", " + jqXHR.responseText.length);
+                console.log("error _" +error);
+
+            }); 
+            $http.get("http://127.0.0.1:3000/readFile/<%=result%>")
+            .then(function (data) {
+                console.log(data.data);
+                $scope.data = data.data.map(function (d) {
+                    d.key = Object.keys(d).join();
+                    d[d.key].Duration = moment.duration(d[d.key].Duration, 'seconds').humanize();
+                    return d;
+                });
+            });
+
+  
+            
+        });
+    </script>
+
+</html>
